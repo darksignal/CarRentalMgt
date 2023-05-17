@@ -1,4 +1,5 @@
-﻿using CarRentalMgt.Server.Models;
+﻿using CarRentalMgt.Server.Configuration.Entities;
+using CarRentalMgt.Server.Models;
 using CarRentalMgt.Shared.Domain;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -21,5 +22,17 @@ namespace CarRentalMgt.Server.Data
         public DbSet<Model> Models { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.ApplyConfiguration(new ColourSeedConfiguration());
+            builder.ApplyConfiguration(new MakeSeedConfiguration());
+            builder.ApplyConfiguration(new ModelSeedConfiguration());
+            builder.ApplyConfiguration(new RoleSeedConfiguration());
+            builder.ApplyConfiguration(new UserSeedConfiguration());
+            builder.ApplyConfiguration(new UserRoleSeedConfiguration());
+        }
     }
 }
