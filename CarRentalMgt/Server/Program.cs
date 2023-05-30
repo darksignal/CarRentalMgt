@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using CarRentalMgt.Server.IRepository;
+using CarRentalMgt.Server.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,10 @@ builder.Services.AddIdentityServer()
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
+
+//DRG Line added to let bootstrap know this is an injectable service type into our app...
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+//End DRG.........................
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
