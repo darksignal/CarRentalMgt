@@ -12,7 +12,6 @@ namespace CarRentalMgt.Server.IRepository
         IGenericRepository<Vehicle> Vehicles { get; }
         IGenericRepository<Colour> Colours { get; }
         IGenericRepository<Booking> Bookings { get; }
-        IGenericRepository<Customer
-            > Customers { get; }
+        IGenericRepository<Customer> Customers { get; }
     }
 }
