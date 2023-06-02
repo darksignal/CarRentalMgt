@@ -52,7 +52,7 @@ namespace CarRentalMgt.Server.Controllers
 
         // POST api/<ModelsController>
         [HttpPost]
-        public async Task<ActionResult<Vehicle>> PostMake(Vehicle vehicle)
+        public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle vehicle)
         {
             if (_unitOfWork.Vehicles == null)
             {

@@ -50,7 +50,7 @@ namespace CarRentalMgt.Server.Controllers
 
         // POST api/<ModelsController>
         [HttpPost]
-        public async Task<ActionResult<Make>> PostMake(Model model)
+        public async Task<ActionResult<Make>> PostModel(Model model)
         {
             if (_unitOfWork.Models == null)
             {

@@ -5,12 +5,12 @@ namespace CarRentalMgt.Shared.Domain
     public class Booking : BaseDomainModel, IValidatableObject
     {
         public int VehicleId { get; set; }
-        public virtual Vehicle Vehicle { get; set; }
+        public virtual Vehicle? Vehicle { get; set; }
         [Required]
         [DataType(DataType.Date)]
         public DateTime DateOut { get; set; }
         public DateTime? DateIn { get; set; }
-        public virtual Customer Customer { get; set; }
+        public virtual Customer? Customer { get; set; }
         [Required]
         public int CustomerId { get; set; }
 

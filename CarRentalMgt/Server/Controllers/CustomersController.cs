@@ -46,7 +46,7 @@ namespace CarRentalMgt.Server.Controllers
 
         // POST api/<ModelsController>
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostMake(Customer customer)
+        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
             if (_unitOfWork.Customers == null)
             {

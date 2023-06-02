@@ -28,7 +28,11 @@ builder.Services.AddAuthentication()
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 //End DRG.........................
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    //DRG Add NewtonsoftJSON for the circular reference between booking and vehicle in the Domain cs files.
+    .AddNewtonsoftJson(op=> op.SerializerSettings.ReferenceLoopHandling = 
+        Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

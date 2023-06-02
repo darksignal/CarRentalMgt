@@ -48,12 +48,12 @@ namespace CarRentalMgt.Server.Controllers
 
         // POST api/<ModelsController>
         [HttpPost]
-        public async Task<ActionResult<Booking>> PostMake(Booking booking)
+        public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
-            if (_unitOfWork.Bookings == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Bookings'  is null.");
-            }
+            //if (_unitOfWork.Bookings == null)
+            //{
+            //    return Problem("Entity set 'ApplicationDbContext.Bookings'  is null.");
+            //}
             await _unitOfWork.Bookings.Insert(booking);
             await _unitOfWork.Save(HttpContext);
 

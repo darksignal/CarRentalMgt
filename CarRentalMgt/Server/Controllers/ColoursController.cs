@@ -46,7 +46,7 @@ namespace CarRentalMgt.Server.Controllers
 
         // POST api/<ModelsController>
         [HttpPost]
-        public async Task<ActionResult<Colour>> PostMake(Colour colour)
+        public async Task<ActionResult<Colour>> PostColour(Colour colour)
         {
             if (_unitOfWork.Colours == null)
             {

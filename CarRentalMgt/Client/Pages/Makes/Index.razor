@@ -3,8 +3,15 @@
 @inject IJSRuntime js
 @attribute [Authorize]
 
-<h3 class="card-title">Car Makes</h3>
+<h3 class="card-title">Makes</h3>
 <hr/>
+<br />
+
+<a href="/makes/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Make
+</a>
+<br />
 <br />
 
 @if(Makes == null)
