@@ -1,8 +1,11 @@
 ﻿using CarRentalMgt.Server.Data;
 using CarRentalMgt.Server.IRepository;
+using CarRentalMgt.Server.Models; //DRG Added for the UserManager "ApplicationUser" below.
 using CarRentalMgt.Shared.Domain;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CarRentalMgt.Server.Repository
 {
@@ -16,10 +19,15 @@ namespace CarRentalMgt.Server.Repository
         private IGenericRepository<Booking> _bookings;
         private IGenericRepository<Customer> _customers;
 
+        //DRG We need to inject UserManager for the new code below to work...
+        private UserManager<ApplicationUser> _userManager;
 
-        public UnitOfWork(ApplicationDbContext context)
+        //DRG We need to initialize the USerManager we created...
+        //public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public IGenericRepository<Make> Makes
             // ??= is like if(null) then a new generic repository of Make is created from Context
@@ -48,7 +56,12 @@ namespace CarRentalMgt.Server.Repository
 
         public async Task Save(HttpContext httpContext)
         {
-            var user = httpContext.User.Identity.Name;
+            //DRG: We are changing this because this httpContext.User.Identity does not contain the user logged in...
+            //   Claim contains information about the user, "I claim I'm this or that..."............................
+            //var user = httpContext.User.Identity.Name;
+            var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _userManager.FindByIdAsync(userId);
+
 
             var entries = _context.ChangeTracker.Entries()
                 .Where(q => q.State == EntityState.Modified ||
@@ -57,11 +70,11 @@ namespace CarRentalMgt.Server.Repository
             foreach (var entry in entries) 
             {
                 ((BaseDomainModel)entry.Entity).DateUpdated = DateTime.Now;
-                ((BaseDomainModel)entry.Entity).UpdatedBy = user;
+                ((BaseDomainModel)entry.Entity).UpdatedBy = user.UserName;
                 if (entry.State == EntityState.Added)
                 {
                     ((BaseDomainModel)entry.Entity).DateCreated = DateTime.Now;
-                    ((BaseDomainModel)entry.Entity).CreatedBy = user;
+                    ((BaseDomainModel)entry.Entity).CreatedBy = user.UserName;
                 }
             }
             await _context.SaveChangesAsync();
