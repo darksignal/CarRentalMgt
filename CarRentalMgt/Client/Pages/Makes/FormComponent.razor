@@ -2,17 +2,22 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="form-group">
-        <label>Name: </label>
-        <div>
-            <InputText @bind-Value="@make.Name" class="form-control" />
-            <ValidationMessage For="@(() => make.Name)" />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Name: </label>
+            <div>
+                <InputText @bind-Value="@make.Name" class="form-control" />
+                <ValidationMessage For="@(() => make.Name)" />
+            </div>
         </div>
-    </div>
+    </fieldset>
 
-    <button type="submit" class="btn btn-success btn-block">
-        @ButtonText
-    </button>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
     <BackToList Target="makes" />
 </EditForm>
 
@@ -20,4 +25,5 @@
     [Parameter] public Make make { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
 }
