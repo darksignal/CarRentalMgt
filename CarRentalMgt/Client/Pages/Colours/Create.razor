@@ -7,22 +7,7 @@
 <hr />
 <br />
 
-<EditForm Model="@colour" OnValidSubmit="CreateColour">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="form-group">
-        <label>Name: </label>
-        <div>
-            <InputText @bind-Value="@colour.Name" class="form-control" />
-            <ValidationMessage For="@(() => colour.Name)" />
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-success btn-block">
-        Create Colour
-    </button>
-</EditForm>
+<FormComponent ButtonText="Create Colour" OnValidSubmit="CreateColour" colour="colour" />
 
 @code {
     Colour colour = new Colour();

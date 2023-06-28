@@ -7,78 +7,12 @@
 <hr />
 <br />
 
-<EditForm Model="@booking" OnValidSubmit="CreateBooking">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="form-group">
-        <label>Customer: </label>
-        <div>
-            <InputSelect @bind-Value="booking.CustomerId" class="form-control">
-                <option value="">-- Select Customer --</option>
-                @if (Customers != null)
-                {
-                    foreach(var customer in Customers)
-                    {
-                        <option value="@customer.Id">@customer.TaxId | @customer.FirstName @customer.LastName | @customer.EmailAddress</option>
-                    }
-                }
-            </InputSelect>
-            <ValidationMessage For="@(() => booking.CustomerId)" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Vehicle: </label>
-        <div>
-            <select @bind="booking.VehicleId" class="form-control">
-                <option value="">-- Select Vehicle --</option>
-                @if (Vehicles != null)
-                {
-                    foreach (var vehicle in Vehicles)
-                    {
-                        <option value="@vehicle.Id">@vehicle.Make.Name @vehicle.Model.Name | @vehicle.LicensePlateNumber</option>
-                    }
-                }
-            </select>
-            <ValidationMessage For="@(() => booking.VehicleId)" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Date Out: </label>
-        <div>
-            <InputDate @bind-Value="@booking.DateOut" class="form-control" />
-            <ValidationMessage For="@(() => booking.DateOut)" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Date In: </label>
-        <div>
-            <InputDate @bind-Value="@booking.DateIn" class="form-control" />
-            <ValidationMessage For="@(() => booking.DateIn)" />
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-success btn-block">
-        Create Booking
-    </button>
-</EditForm>
+<FormComponent ButtonText="Create Booking" OnValidSubmit="CreateBooking" booking="booking" />
 
 @code {
     Booking booking = new Booking {
             DateOut = DateTime.Now.Date 
     };
-    //DRG this will be a list with the Makes to be uysed in the select above, we will also OnInitialized populate the list
-    private IList<Customer> Customers;
-    private IList<Vehicle> Vehicles;
-
-    protected async override Task OnInitializedAsync()
-    {
-        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
-        Vehicles = await _client.GetFromJsonAsync<List<Vehicle>>($"{Endpoints.VehiclesEndpoint}");
-    }
 
     private async Task CreateBooking()
     {
