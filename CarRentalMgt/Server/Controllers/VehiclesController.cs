@@ -16,13 +16,17 @@ namespace CarRentalMgt.Server.Controllers
     public class VehiclesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpCcontextAccessor;
 
-        public VehiclesController(IUnitOfWork unitOfWork)
+        public VehiclesController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
+            _httpCcontextAccessor = contextAccessor;
         }
 
-        // GET: api/<ModelsController>
+        // GET: api/<VehiclesController>
         [HttpGet]
         public async Task<IActionResult> GetVehicles()
         {
@@ -35,7 +39,7 @@ namespace CarRentalMgt.Server.Controllers
             return Ok(vehicles);
         }
 
-        // GET api/<ModelsController>/5
+        // GET api/<VehiclesController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
@@ -50,7 +54,7 @@ namespace CarRentalMgt.Server.Controllers
             return Ok(vehicle);
         }
 
-        // POST api/<ModelsController>
+        // POST api/<VehiclesController>
         [HttpPost]
         public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle vehicle)
         {
@@ -58,13 +62,17 @@ namespace CarRentalMgt.Server.Controllers
             {
                 return Problem("Entity set 'ApplicationDbContext.Vehicles'  is null.");
             }
+
+            vehicle.ImageName = CreateFile(vehicle.Image, vehicle.ImageName);
+
+
             await _unitOfWork.Vehicles.Insert(vehicle);
             await _unitOfWork.Save(HttpContext);
 
             return CreatedAtAction("GetVehicle", new { id = vehicle.Id }, vehicle);
         }
 
-        // PUT api/<ModelsController>/5
+        // PUT api/<VehiclesController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVehicle(int id, Vehicle vehicle)
         {
@@ -72,6 +80,7 @@ namespace CarRentalMgt.Server.Controllers
             {
                 return BadRequest();
             }
+            vehicle.ImageName = CreateFile(vehicle.Image, vehicle.ImageName);
 
             _unitOfWork.Vehicles.Update(vehicle);
 
@@ -94,7 +103,7 @@ namespace CarRentalMgt.Server.Controllers
             return NoContent();
         }
 
-        // DELETE api/<ModelsController>/5
+        // DELETE api/<VehiclesController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVehicle(int id)
         {
@@ -113,6 +122,21 @@ namespace CarRentalMgt.Server.Controllers
         {
             var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
             return vehicle == null;
+        }
+
+        private string CreateFile(byte[]? image, string? name)
+        {
+            var imageName = "";
+            if (image != null)
+            {
+                var url = _httpCcontextAccessor.HttpContext.Request.Host.Value;
+                var path = $"{_webHostEnvironment.WebRootPath}\\uploads\\{name}";
+                var fileStream = System.IO.File.Create(path);
+                fileStream.Write(image, 0, image.Length);
+                fileStream.Close();
+                imageName = $"https://{url}/uploads/{name}";
+            }
+            return imageName;
         }
     }
 }

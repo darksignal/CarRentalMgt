@@ -41,8 +41,8 @@ namespace CarRentalMgt.Client.Services
                         message = "Something went wrong, please contact Administrator";
                         break;
                 }
-                //DRG we don't really need this since will not affect the user... is just for us to see in the console...
-                //throw new HttpRequestException(message);
+                //DRG we want this to stop the execution and see the error, otherwise will continue the execution and for example when an error during creation, will go back to Index page...
+                throw new HttpRequestException(message);
             }
         }
 
