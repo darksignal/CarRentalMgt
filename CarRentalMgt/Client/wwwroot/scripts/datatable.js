@@ -6,7 +6,7 @@ function AddDataTable(table) {
     })
 }
 
-function DataTablesDispose(table) {
+function DisposeDataTable(table) {
     $(document).ready(function () {
         $(table).DataTable().destroy();
         var element = document.querySelector(table + '_wrapper');

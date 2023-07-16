@@ -71,7 +71,11 @@ else
         await js.InvokeVoidAsync("AddDataTable", "#bookingsTable");
     }
 
-    void IDisposable.Dispose() => js.InvokeVoidAsync("DataTableDispose", "#bookingsTable");
+
+    void IDisposable.Dispose()
+    {
+        js.InvokeVoidAsync("DisposeDataTable", "#bookingsTable"); 
+    }
 
     async Task Delete(int bookingId)
     {

@@ -26,6 +26,17 @@ namespace CarRentalMgt.Client.Pages.Colours
             Colours = await _client.GetFromJsonAsync<List<Colour>>($"{Endpoints.ColoursEndpoint}");
         }
 
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            await js.InvokeVoidAsync("AddDataTable", "#coloursTable");
+        }
+
+
+        void IDisposable.Dispose()
+        {
+            js.InvokeVoidAsync("DisposeDataTable", "#coloursTable");
+        }
+
         async Task Delete(int colourId)
         {
             var colour = Colours.First(q => q.Id == colourId);
