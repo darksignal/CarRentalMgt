@@ -1,9 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarRentalMgt.Server.Data;
 using CarRentalMgt.Shared.Domain;
 using CarRentalMgt.Server.IRepository;
 
@@ -30,12 +26,9 @@ namespace CarRentalMgt.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVehicles()
         {
-            //if (_unitOfWork.Vehicles == null)
-            //{
-            //    return NotFound();
-            //}
-            var includes = new List<string> { "Make", "Model", "Colour" };
-            var vehicles = await _unitOfWork.Vehicles.GetAll(includes: includes);
+            var vehicles = await _unitOfWork.Vehicles.GetAll(includes: q => q.Include(x => x.Make)
+                                                                             .Include(x => x.Model)
+                                                                             .Include(x => x.Colour));
             return Ok(vehicles);
         }
 
@@ -43,8 +36,10 @@ namespace CarRentalMgt.Server.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
-            var includes = new List<string> { "Make", "Model", "Colour", "Bookings" };
-            var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id, includes);
+            var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id, includes: q => q.Include(x => x.Make)
+                                                                                          .Include(x => x.Model)
+                                                                                          .Include(x => x.Colour)
+                                                                                          .Include(x => x.Bookings));
 
             if (vehicle == null)
             {
