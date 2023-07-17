@@ -1,4 +1,5 @@
-﻿using CarRentalMgt.Client.Services;
+﻿using CarRentalMgt.Client.Contracts;
+using CarRentalMgt.Client.Services;
 using CarRentalMgt.Client.Static;
 using CarRentalMgt.Shared.Domain;
 using Microsoft.AspNetCore.Components;
@@ -8,33 +9,18 @@ using System.Net.Http.Json;
 namespace CarRentalMgt.Client.Pages.Colours
 {
     //DRG: Partial means this class is a partial implementation that works toghether with other class...
-    public partial class Index : IDisposable //DRG We added IDisposable for the Global Error Handling
+    public partial class Index
     {
-        //DRG: The Inject were copied from the razor file @inject transformed into [Inject] the AspNetCore.Components was needed for these.
-        [Inject] HttpClient _client { get; set; }
+        //DRG: Changing for the Http Repository to reuse code....
+        [Inject] IHttpRepository<Colour>? _client { get; set; }
         [Inject] IJSRuntime js { get; set; }
-        [Inject] HttpInterceptorService _interceptor { get; set; } //DRG Global Error Handling
 
         //DRG: The code is being moved also from the razor file into this class.
-        private List<Colour>? Colours;
+        private IList<Colour>? Colours;
 
         protected async override Task OnInitializedAsync()
         {
-            _interceptor.MonitorEvent(); //DRG Global Error Handling
-            //DRG To see the console message in the Browser rightclick inspect, go to the Console tab and you will see...
-            //Console.WriteLine("Hitting Code Behind");
-            Colours = await _client.GetFromJsonAsync<List<Colour>>($"{Endpoints.ColoursEndpoint}");
-        }
-
-        protected async override Task OnAfterRenderAsync(bool firstRender)
-        {
-            await js.InvokeVoidAsync("AddDataTable", "#coloursTable");
-        }
-
-
-        void IDisposable.Dispose()
-        {
-            js.InvokeVoidAsync("DisposeDataTable", "#coloursTable");
+            Colours = await _client.GetAll(Endpoints.ColoursEndpoint);
         }
 
         async Task Delete(int colourId)
@@ -43,15 +29,9 @@ namespace CarRentalMgt.Client.Pages.Colours
             var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {colour.Name}?");
             if (confirm)
             {
-                _interceptor.MonitorEvent(); //DRG Global Error Handling
-                await _client.DeleteAsync($"{Endpoints.ColoursEndpoint}/{colourId}");
+                await _client.Delete(Endpoints.ColoursEndpoint,colourId);
                 await OnInitializedAsync();
             }
-        }
-
-        public void Dispose()
-        {
-            _interceptor.DisposeEvent();
         }
     }
 }

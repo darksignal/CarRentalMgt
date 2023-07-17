@@ -1,4 +1,5 @@
 using CarRentalMgt.Client;
+using CarRentalMgt.Client.Contracts;
 using CarRentalMgt.Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -26,7 +27,9 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddHttpClientInterceptor();
 builder.Services.AddScoped<HttpInterceptorService>();
 //End DRG.....
-
+//DRG For HTTPClient Repository.........
+builder.Services.AddTransient(typeof(IHttpRepository<>), typeof(HttpRepository<>));
+//End DRG...............................
 builder.Services.AddApiAuthorization();
 
 await builder.Build().RunAsync();
