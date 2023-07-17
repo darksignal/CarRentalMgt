@@ -32,10 +32,26 @@ namespace CarRentalMgt.Server.Controllers
             return Ok(vehicles);
         }
 
-        // GET api/<VehiclesController>/5
+        // GET api/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicle(int id)
         {
+
+            var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(vehicle);
+        }
+
+        // GET Details api/5/details
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetVehicleDetails(int id)
+        {
+
             var vehicle = await _unitOfWork.Vehicles.Get(q => q.Id == id, includes: q => q.Include(x => x.Make)
                                                                                           .Include(x => x.Model)
                                                                                           .Include(x => x.Colour)
